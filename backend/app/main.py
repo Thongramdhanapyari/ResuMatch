@@ -4,17 +4,20 @@ from app.routes.analyze import router as analyze_router
 from app.routes.auth import router as auth_router
 from sqlmodel import SQLModel
 from database import engine
-import os
 
 app = FastAPI()
 
 SQLModel.metadata.create_all(engine)
 
-FRONTEND_URL = os.getenv("FRONTEND_URL", "https://resu-match-psi.vercel.app")
+origins = [
+    "http://localhost:3000",
+    "https://resu-match-psi.vercel.app",
+    "https://resu-match-c7qk4tygu-thongramdhanapyaris-projects.vercel.app",
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
