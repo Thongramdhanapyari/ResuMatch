@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+/* Blue-gray monochrome palette */
+:root {
+  --background: #E5E7EB;
+  --foreground: #111827;
+  --muted: #6b7280;
+  --accent: #3b82f6;
+  --surface: rgba(255, 255, 255, 0.6);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* 🧊 Cards */
+.card {
+  background: var(--surface);  /* soft white */
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* 🚀 Primary Button */
+.btn-primary {
+  @apply rounded-2xl px-6 py-3 font-semibold transition;
+  background-color: #9ca3af; /* cool gray */
+  color: #1f2430;
+}
+
+.btn-primary:hover {
+  background-color: #d1d5db; /* lighter gray */
+  color: #1f2430;
+}
