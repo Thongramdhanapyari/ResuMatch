@@ -35,7 +35,6 @@ export default function LoginPage() {
       if (!response.ok) {
         let message = "Something went wrong";
 
-        // ✅ ONLY THIS PART CHANGED
         if (Array.isArray(data.detail)) {
           message = "";
 
@@ -69,7 +68,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="relative min-h-screen bg-[#E5E7EB] px-3 py-5">
+    <main className="relative min-h-screen bg-[#E5E7EB] px-4 py-6 md:px-6 md:py-10">
       <Link
         href="/"
         className="absolute left-3 top-3 text-[11px] text-[#64748B] hover:text-[#1E293B]"
@@ -77,23 +76,23 @@ export default function LoginPage() {
         ← Back
       </Link>
 
-      <div className="mx-auto flex min-h-[calc(100vh-2rem)] max-w-xs items-center justify-center">
-        <div className="w-full rounded-xl border border-[#D1D5DB] bg-white/70 p-4 shadow-sm backdrop-blur-sm">
-          <span className="inline-flex text-[15px] font-medium text-[#1E293B] ml-21">
+      <div className="mx-auto flex min-h-[calc(100vh-2rem)] max-w-xs md:max-w-md items-center justify-center">
+        <div className="w-full rounded-xl border border-[#D1D5DB] bg-white/70 p-4 md:p-6 shadow-sm backdrop-blur-sm">
+          <span className="inline-flex text-[16px] md:text-[20px] font-medium text-[#1E293B] text-center w-full">
             Welcome back!
           </span>
 
-          <h1 className="mt-3 text-sm font-semibold leading-tight text-[#64748B]">
+          <h1 className="mt-3 text-xs md:text-sm font-semibold leading-tight text-[#64748B] text-center">
             <span>Log in to continue your resume journey.</span>
           </h1>
 
-          <form className="mt-4 space-y-2.5" onSubmit={handleLogin}>
+          <form className="mt-4 space-y-2.5 md:space-y-3" onSubmit={handleLogin}>
             <input
               type="email"
               name="email"
               placeholder="Email"
               onChange={handleChange}
-              className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-2.5 text-[11px] outline-none focus:border-[#64748B]"
+              className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-2.5 md:p-3 text-[12px] md:text-sm outline-none focus:border-[#64748B]"
             />
 
             <input
@@ -101,7 +100,7 @@ export default function LoginPage() {
               name="password"
               placeholder="Password"
               onChange={handleChange}
-              className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-2.5 text-[11px] outline-none focus:border-[#64748B]"
+              className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-2.5 md:p-3 text-[12px] md:text-sm outline-none focus:border-[#64748B]"
             />
 
             {error && (
@@ -110,17 +109,17 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full rounded-xl bg-[#64748B] p-2.5 text-[11px] font-semibold text-white hover:bg-[#475569]"
+              className="w-full rounded-xl bg-[#64748B] p-2.5 md:p-3 text-[12px] md:text-sm font-semibold text-white hover:bg-[#475569]"
             >
               Log In
             </button>
           </form>
 
-          <p className="mt-4 text-center text-[10px] text-[#64748B]">
+          <p className="mt-4 text-center text-[11px] md:text-xs text-[#64748B]">
             Log in to analyze resumes and improve your match score.
           </p>
 
-          <p className="mt-2 text-center text-[11px] text-[#64748B]">
+          <p className="mt-2 text-center text-[12px] md:text-sm text-[#64748B]">
             Don’t have an account?{" "}
             <Link href="/signup" className="font-semibold text-[#1E293B]">
               Sign up

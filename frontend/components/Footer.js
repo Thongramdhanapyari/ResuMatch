@@ -1,27 +1,25 @@
 export default function Footer() {
   return (
-    <footer className="mt-12 border-t border-white/20 bg-[#64748B] backdrop-blur">
-      <div className="mx-auto grid max-w-7xl gap-8 px-6 py-10 md:grid-cols-3">
+    <footer className="mt-12 border-t border-white/20 bg-[#64748B] backdrop-blur md:mt-16">
+      <div className="mx-auto grid max-w-7xl gap-8 px-6 py-10 md:grid-cols-3 md:px-8 md:py-12">
         
-        {/* Brand */}
         <div>
-          <h3 className="text-xl font-bold text-black">
+          <h3 className="text-xl md:text-2xl font-bold text-black">
             Resu<span className="text-[var(--accent)]">Match</span>
           </h3>
 
-          <p className="mt-3 text-xs leading-5 text-[#E2E8F0]">
+          <p className="mt-3 text-xs md:text-sm leading-5 md:leading-6 text-[#E2E8F0]">
             An AI-powered resume analyzer built to help users
             improve resume relevance for real job descriptions.
           </p>
         </div>
 
-        {/* Navigation */}
         <div>
-          <h4 className="text-sm font-semibold uppercase tracking-wide text-[#E2E8F0]">
+          <h4 className="text-sm md:text-base font-semibold uppercase tracking-wide text-[#E2E8F0]">
             Navigation
           </h4>
 
-          <ul className="mt-4 space-y-3 text-xs">
+          <ul className="mt-4 space-y-3 text-xs md:text-sm">
             <li>
               <a href="#why" className="text-[#E2E8F0] hover:text-white transition">
                 Why
@@ -45,13 +43,12 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Project Info */}
         <div>
-          <h4 className="text-sm font-semibold uppercase tracking-wide text-[#E2E8F0]">
+          <h4 className="text-sm md:text-base font-semibold uppercase tracking-wide text-[#E2E8F0]">
             Project
           </h4>
 
-          <ul className="mt-4 space-y-3 text-xs text-[#E2E8F0]">
+          <ul className="mt-4 space-y-3 text-xs md:text-sm text-[#E2E8F0]">
             <li>Built for portfolio and interview showcase</li>
             <li></li>
             <li></li>

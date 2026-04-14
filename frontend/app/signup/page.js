@@ -17,7 +17,7 @@ export default function SignupPage() {
   const handleChange = (e) => {
     setForm({
       ...form,
-      [e.target.name]:e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -39,7 +39,6 @@ export default function SignupPage() {
       if (!response.ok) {
         let message = "Something went wrong";
 
-        // ✅ ONLY THIS PART CHANGED
         if (Array.isArray(data.detail)) {
           message = "";
 
@@ -76,19 +75,19 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#E5E7EB] px-6 py-10">
+    <main className="min-h-screen bg-[#E5E7EB] px-4 py-6 md:px-6 md:py-10">
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2 lg:items-center">
         <div className="max-w-xl ml-10">
-          <span className="inline-flex rounded-full border border-[#D1D5DB] bg-[#F3F4F6] px-2 py-1.5 text-xs font-medium text-[#64748B] shadow-sm">
+          <span className="inline-flex rounded-full border border-[#D1D5DB] bg-[#F3F4F6] px-2 py-1.5 text-xs md:text-sm font-medium text-[#64748B] shadow-sm">
             Create your account
           </span>
 
-          <h1 className="mt-4 text-sm font-semibold leading-tight text-[#1E293B] md:text-xl">
+          <h1 className="mt-4 text-sm md:text-xl font-semibold leading-tight text-[#1E293B]">
             Start building a smarter
             <span className="block text-[#64748B]">resume strategy</span>
           </h1>
 
-          <p className="mt-5 text-sm leading-5 text-[#64748B]">
+          <p className="mt-5 text-sm md:text-base leading-5 text-[#64748B]">
             Sign up to analyze resumes, compare them with job descriptions, and
             get practical suggestions to improve your chances.
           </p>
@@ -96,7 +95,7 @@ export default function SignupPage() {
           <div className="mt-7 flex flex-wrap gap-4">
             <Link
               href="/"
-              className="rounded-2xl border border-[#D1D5DB] px-6 py-2.5 text-xs font-semibold text-[#1E293B] transition hover:bg-[#F3F4F6]"
+              className="rounded-2xl border border-[#D1D5DB] px-6 py-2.5 text-xs md:text-sm font-semibold text-[#1E293B] transition hover:bg-[#F3F4F6]"
             >
               ← Back Home
             </Link>
@@ -108,18 +107,18 @@ export default function SignupPage() {
             <div className="h-[420px] w-[420px] rounded-full bg-[#60A5FA]/30 blur-[120px]" />
           </div>
 
-          <div className="relative w-full max-w-xs rounded-[24px] border border-[#D1D5DB] bg-white/70 p-5 shadow-md backdrop-blur-sm">
-            <p className="mt-2 text-xs text-[#64748B]">
+          <div className="relative w-full max-w-xs md:max-w-md rounded-[24px] border border-[#D1D5DB] bg-white/70 p-5 md:p-6 shadow-md backdrop-blur-sm">
+            <p className="mt-2 text-xs md:text-sm text-[#64748B]">
               Create your account to get started.
             </p>
 
-            <form className="mt-4 space-y-3 mr-3" onSubmit={handleSignup}>
+            <form className="mt-4 space-y-3 mr-3 md:space-y-4" onSubmit={handleSignup}>
               <input
                 type="text"
                 name="name"
                 placeholder="Full name"
                 onChange={handleChange}
-                className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-3 text-xs text-[#1E293B] outline-none transition placeholder:text-[#94A3B8] focus:border-[#64748B]"
+                className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-3 md:p-3.5 text-xs md:text-sm text-[#1E293B] outline-none transition placeholder:text-[#94A3B8] focus:border-[#64748B]"
               />
 
               <input
@@ -127,7 +126,7 @@ export default function SignupPage() {
                 name="email"
                 placeholder="Email address"
                 onChange={handleChange}
-                className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-3 text-xs text-[#1E293B] outline-none transition placeholder:text-[#94A3B8] focus:border-[#64748B]"
+                className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-3 md:p-3.5 text-xs md:text-sm text-[#1E293B] outline-none transition placeholder:text-[#94A3B8] focus:border-[#64748B]"
               />
 
               <input
@@ -135,7 +134,7 @@ export default function SignupPage() {
                 name="password"
                 placeholder="Password"
                 onChange={handleChange}
-                className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-3 text-xs text-[#1E293B] outline-none transition placeholder:text-[#94A3B8] focus:border-[#64748B]"
+                className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-3 md:p-3.5 text-xs md:text-sm text-[#1E293B] outline-none transition placeholder:text-[#94A3B8] focus:border-[#64748B]"
               />
 
               {error && (
@@ -144,13 +143,13 @@ export default function SignupPage() {
 
               <button
                 type="submit"
-                className="w-full rounded-xl bg-[#64748B] px-3 py-3 text-xs font-semibold text-white transition hover:bg-[#475569]"
+                className="w-full rounded-xl bg-[#64748B] px-3 py-3 md:py-3.5 text-xs md:text-sm font-semibold text-white transition hover:bg-[#475569]"
               >
                 Sign Up
               </button>
             </form>
 
-            <p className="mt-6 text-center text-xs text-[#64748B]">
+            <p className="mt-6 text-center text-xs md:text-sm text-[#64748B]">
               Already have an account?{" "}
               <Link href="/login" className="font-semibold text-[#1E293B]">
                 Log in

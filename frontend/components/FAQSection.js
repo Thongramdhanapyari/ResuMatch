@@ -31,13 +31,13 @@ export default function FAQSection() {
   };
 
   return (
-    <section id="faq" className="py-15 px-4">
-      <div className="mx-auto max-w-3xl rounded-3xl border border-[#D1D5DB] bg-[#F3F4F6] p-6 shadow-lg">
-        <h2 className="text-xl font-bold text-[#1E293B]">
+    <section id="faq" className="py-15 px-4 md:px-6 md:py-20">
+      <div className="mx-auto max-w-3xl md:max-w-4xl rounded-3xl border border-[#D1D5DB] bg-[#F3F4F6] p-6 md:p-8 shadow-lg">
+        <h2 className="text-xl md:text-2xl font-bold text-[#1E293B]">
           Frequently Asked Questions
         </h2>
 
-        <div className="mt-3 space-y-2">
+        <div className="mt-3 space-y-2 md:mt-5 md:space-y-3">
           {faqs.map((faq, index) => {
             const isOpen = openItems[index];
 
@@ -45,9 +45,9 @@ export default function FAQSection() {
               <div
                 key={index}
                 onClick={() => toggleFAQ(index)}
-                className="cursor-pointer rounded-2xl border border-[#D1D5DB] bg-white p-4 text-[11px] text-[#475569] transition hover:bg-[#F9FAFB]"
+                className="cursor-pointer rounded-2xl border border-[#D1D5DB] bg-white p-4 md:p-5 text-[11px] md:text-sm text-[#475569] transition hover:bg-[#F9FAFB]"
               >
-                <p className="font-medium text-[#1E293B]">
+                <p className="font-medium text-[#1E293B] md:text-base">
                   {isOpen ? "−" : "+"} {faq.q}
                 </p>
 
@@ -56,7 +56,7 @@ export default function FAQSection() {
                     isOpen ? "mt-2 max-h-40 opacity-100" : "max-h-0 opacity-0"
                   }`}
                 >
-                  <p className="text-[#475569]">{faq.a}</p>
+                  <p className="text-[#475569] md:text-sm">{faq.a}</p>
                 </div>
               </div>
             );
