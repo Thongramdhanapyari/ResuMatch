@@ -29,4 +29,7 @@ app.include_router(auth_router, prefix="/api/auth")
 
 @app.get("/")
 def root():
-    return {"message": "Backend running"}
+    return {
+        "message": "Backend running",
+        "cors_version": "main.py with psi vercel origin"
+    }
