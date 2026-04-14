@@ -10,12 +10,12 @@ app = FastAPI()
 
 SQLModel.metadata.create_all(engine)
 
-FRONTEND_URL = os.getenv("FRONTEND_URL", "*")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://resu-match-psi.vercel.app")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL] if FRONTEND_URL != "*" else ["*"],
-    allow_credentials=False if FRONTEND_URL == "*" else True,
+    allow_origins=[FRONTEND_URL],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

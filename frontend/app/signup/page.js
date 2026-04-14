@@ -17,8 +17,7 @@ export default function SignupPage() {
   const handleChange = (e) => {
     setForm({
       ...form,
-      [e.target.placeholder.toLowerCase().includes("name") ? "name" : e.target.type]:
-        e.target.value,
+      [e.target.name]:e.target.value,
     });
   };
 
