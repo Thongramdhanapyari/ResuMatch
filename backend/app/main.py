@@ -9,15 +9,13 @@ app = FastAPI()
 
 SQLModel.metadata.create_all(engine)
 
-origins = [
-    "http://localhost:3000",
-    "https://resu-match-psi.vercel.app",
-    "https://resu-match-c7qk4tygu-thongramdhanapyaris-projects.vercel.app",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[
+        "http://localhost:3000",
+        "https://resu-match-psi.vercel.app",
+    ],
+    allow_origin_regex=r"https://resu-match-.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,10 +24,6 @@ app.add_middleware(
 app.include_router(analyze_router, prefix="/api")
 app.include_router(auth_router, prefix="/api/auth")
 
-
 @app.get("/")
 def root():
-    return {
-        "message": "Backend running",
-        "cors_version": "main.py with psi vercel origin"
-    }
+    return {"message": "Backend running"}
