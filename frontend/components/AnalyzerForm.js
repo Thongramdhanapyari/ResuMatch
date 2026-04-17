@@ -17,9 +17,9 @@ export default function AnalyzerForm({
   return (
     <section
       id="analyzer"
-      className="mb-10 -mx-6 mt-5 bg-white px-6 py-12 md:px-8 md:py-16"
+      className="w-full bg-white py-12 md:py-16 "
     >
-      <div className="mx-auto max-w-3xl md:max-w-5xl">
+      <div className="w-full px-4 md:px-8">
         <div className="text-center">
           <h2 className="text-sm font-bold text-[#1E293B] md:text-2xl">
             Resume Analyzer

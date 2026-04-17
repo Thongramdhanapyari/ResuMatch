@@ -12,9 +12,9 @@ export default function WhySection() {
         />
       </div>
 
-      <div className="rounded-3xl border border-[#D1D5DB] bg-white p-8 md:p-12 shadow-sm">
+      <div className="rounded-3xl border border-[#D1D5DB] bg-white p-8 md:p-15 md:pt-15 shadow-sm min-h-[250px] md:min-h-[340px]">
         <h2 className="text-xl md:text-2xl font-bold text-[#1E293B]">
-          Why this app matters
+          Why ResuMatch matters
         </h2>
 
         <p className="mt-4 text-xs md:text-sm leading-5 md:leading-6 text-[#475569]">
@@ -29,7 +29,7 @@ export default function WhySection() {
         </p>
       </div>
 
-      <div className="rounded-3xl border border-[#D1D5DB] bg-white p-8 md:p-12 shadow-sm">
+      <div className="rounded-3xl border border-[#D1D5DB] bg-white p-8 md:p-15 shadow-sm min-h-[250px] md:min-h-[360px]">
         <h3 className="text-xl md:text-2xl font-semibold text-[#1E293B]">
           Who it helps
         </h3>
@@ -42,7 +42,7 @@ export default function WhySection() {
         </ul>
       </div>
 
-      <div className="p-4 md:p-8 mt-0">
+      <div className="p-4 md:p-7 md:pt-0 mt-0">
         <img
           src="/how_will_benefit.png"
           alt="who itHelps"

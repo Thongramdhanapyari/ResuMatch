@@ -24,20 +24,18 @@ export default function FeaturesSection() {
 
   return (
     <section id="features" className="pt-0 pb-6 md:pb-10">
-      
-      <div className="mb-6 -mx-6 inline-block bg-[#64748B]/50 backdrop-blur text-black pl-10 py-3 pr-40 md:pl-12 md:py-4 md:pr-52
+      <div className="mb-6 inline-block ml-[calc(50%-50vw)] bg-[#64748B]/50 backdrop-blur text-black pl-10 py-3 pr-40 md:pl-12 md:py-4 md:pr-52
                       [clip-path:polygon(0_0,90%_0,100%_50%,90%_100%,0_100%)]">
-        
-        <h2 className="text-lg md:text-2xl font-semibold">
+        <h2 className="text-lg md:text-2xl font-semibold md:pl-15">
           Features
         </h2>
 
-        <p className="text-xs md:text-sm mt-1 opacity-90">
+        <p className="text-xs md:text-sm mt-1 opacity-90 md:pl-15">
           Designed to make resume analysis simple, useful, and recruiter-focused
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 pt-8 md:gap-6 md:pt-10">
+      <div className="grid grid-cols-1 gap-4 pt-8 sm:grid-cols-2 lg:grid-cols-4 md:gap-6 md:pt-10">
         {features.map((feature) => (
           <div
             key={feature.title}
@@ -67,7 +65,6 @@ export default function FeaturesSection() {
           </div>
         ))}
       </div>
-
     </section>
   );
 }
