@@ -74,11 +74,12 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen overflow-x-hidden">
       <Navbar />
 
       <div className="mx-auto max-w-7xl px-6">
         <HeroSection />
+      </div>
         <AnalyzerForm
           resume={resume}
           setResume={setResume}
@@ -89,6 +90,7 @@ export default function Home() {
           error={error}
           result={result}
         />
+      <div className="mx-auto max-w-7xl px-6">
         <ResultsPanel result={result} />
         <WhySection />
         <FeaturesSection />
