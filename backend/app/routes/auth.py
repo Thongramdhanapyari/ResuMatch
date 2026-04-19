@@ -26,7 +26,7 @@ def signup(data: UserCreate, session: Session = Depends(get_session)):
     user = User(
         name=data.name.strip(),
         email=email,
-        password=hash_password(data.password),
+        hashed_password=hash_password(data.password),
     )
 
     try:
@@ -64,7 +64,7 @@ def login(data: UserLogin, session: Session = Depends(get_session)):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    if not verify_password(data.password, user.password):
+    if not verify_password(data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     token = create_access_token(
