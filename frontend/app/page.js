@@ -62,6 +62,9 @@ export default function Home() {
 
       setResult({
         match_score: data.match_score ?? 0,
+        skills_score: data.skills_score ?? 0,
+        content_score: data.content_score ?? 0,
+        ats_score: data.ats_score ?? 0,
         matched_skills: Array.isArray(data.matched_skills) ? data.matched_skills : [],
         missing_skills: Array.isArray(data.missing_skills) ? data.missing_skills : [],
         suggestions: Array.isArray(data.suggestions) ? data.suggestions : [],

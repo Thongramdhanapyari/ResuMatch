@@ -4,15 +4,11 @@ from app.services.analyzer import analyze_resume
 from app.core.security import verify_token
 
 router = APIRouter()
-security = HTTPBearer(auto_error=False)
-
+security = HTTPBearer()
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
-    if not credentials:
-        raise HTTPException(status_code=401, detail="Authorization token missing")
-
     token = credentials.credentials
     payload = verify_token(token)
 
@@ -21,11 +17,16 @@ def get_current_user(
 
     return payload
 
-
 @router.post("/analyze")
 async def analyze(
     resume: UploadFile = File(...),
     job_description: str = Form(...),
     current_user: dict = Depends(get_current_user),
 ):
-    return await analyze_resume(resume, job_description)
+    if resume.content_type not in ["application/pdf"]:
+        raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+
+    try:
+        return await analyze_resume(resume, job_description)
+    except Exception:
+        raise HTTPException(status_code=500, detail="Error analyzing resume")

@@ -12,6 +12,7 @@ export default function LoginPage() {
     password: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,13 +22,29 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
+    if (!form.email.trim() || !form.password.trim()) {
+      setError("Email and password are required");
+      return;
+    }
+
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    if (!API_URL) {
+      setError("API not configured");
+      return;
+    }
+
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+      setLoading(true);
+
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          email: form.email.trim(),
+          password: form.password,
+        }),
       });
 
       const data = await response.json();
@@ -46,6 +63,10 @@ export default function LoginPage() {
               message += "Password must be at least 6 characters. ";
             }
           });
+
+          if (!message.trim()) {
+            message = "Invalid input";
+          }
         } else if (typeof data.detail === "string") {
           message = data.detail;
         }
@@ -59,11 +80,11 @@ export default function LoginPage() {
         localStorage.setItem("user", JSON.stringify(data.user));
       }
 
-      localStorage.setItem("auth", "true");
-
       router.push("/");
     } catch (err) {
       setError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,7 +104,7 @@ export default function LoginPage() {
           </span>
 
           <h1 className="mt-3 text-xs md:text-sm font-semibold leading-tight text-[#64748B] text-center">
-            <span>Log in to continue your resume journey.</span>
+            Log in to continue your resume journey.
           </h1>
 
           <form className="mt-4 space-y-2.5 md:space-y-3" onSubmit={handleLogin}>
@@ -91,7 +112,9 @@ export default function LoginPage() {
               type="email"
               name="email"
               placeholder="Email"
+              value={form.email}
               onChange={handleChange}
+              required
               className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-2.5 md:p-3 text-[12px] md:text-sm outline-none focus:border-[#64748B]"
             />
 
@@ -99,19 +122,20 @@ export default function LoginPage() {
               type="password"
               name="password"
               placeholder="Password"
+              value={form.password}
               onChange={handleChange}
+              required
               className="w-full rounded-xl border border-[#D1D5DB] bg-[#F8FAFC] p-2.5 md:p-3 text-[12px] md:text-sm outline-none focus:border-[#64748B]"
             />
 
-            {error && (
-              <p className="text-[10px] text-red-500">{error}</p>
-            )}
+            {error && <p className="text-[10px] text-red-500">{error}</p>}
 
             <button
               type="submit"
-              className="w-full rounded-xl bg-[#64748B] p-2.5 md:p-3 text-[12px] md:text-sm font-semibold text-white hover:bg-[#475569]"
+              disabled={loading}
+              className="w-full rounded-xl bg-[#64748B] p-2.5 md:p-3 text-[12px] md:text-sm font-semibold text-white hover:bg-[#475569] disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Log In
+              {loading ? "Logging in..." : "Log In"}
             </button>
           </form>
 

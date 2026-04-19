@@ -7,7 +7,9 @@ from database import engine
 
 app = FastAPI()
 
-SQLModel.metadata.create_all(engine)
+@app.on_event("startup")
+def on_startup():
+    SQLModel.metadata.create_all(engine)
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,7 +17,6 @@ app.add_middleware(
         "http://localhost:3000",
         "https://resu-match-psi.vercel.app",
     ],
-    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -30,3 +31,7 @@ def root():
         "message": "Backend running",
         "fixed": "cors working"
     }
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}

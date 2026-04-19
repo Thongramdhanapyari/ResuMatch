@@ -11,25 +11,34 @@ router = APIRouter()
 
 @router.post("/signup")
 def signup(data: UserCreate, session: Session = Depends(get_session)):
+    email = data.email.lower().strip()
+
     existing_user = session.exec(
-        select(User).where(User.email == data.email)
+        select(User).where(User.email == email)
     ).first()
 
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already exists")
 
+    if len(data.password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+
     user = User(
-        name=data.name,
-        email=data.email.lower().strip(),
+        name=data.name.strip(),
+        email=email,
         password=hash_password(data.password),
     )
 
-    session.add(user)
-    session.commit()
-    session.refresh(user)
+    try:
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+    except Exception:
+        session.rollback()
+        raise HTTPException(status_code=500, detail="Signup failed")
 
     token = create_access_token(
-        {"sub": user.email, "id": user.id, "name": user.name}
+        {"sub": user.email, "id": user.id}
     )
 
     return {
@@ -46,8 +55,10 @@ def signup(data: UserCreate, session: Session = Depends(get_session)):
 
 @router.post("/login")
 def login(data: UserLogin, session: Session = Depends(get_session)):
+    email = data.email.lower().strip()
+
     user = session.exec(
-        select(User).where(User.email == data.email.lower().strip())
+        select(User).where(User.email == email)
     ).first()
 
     if not user:
@@ -57,7 +68,7 @@ def login(data: UserLogin, session: Session = Depends(get_session)):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     token = create_access_token(
-        {"sub": user.email, "id": user.id, "name": user.name}
+        {"sub": user.email, "id": user.id}
     )
 
     return {
