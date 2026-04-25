@@ -29,18 +29,32 @@ export default function Navbar() {
           <span className="text-[var(--accent)]">Match</span>
         </h1>
 
+        {/* NAV LINKS */}
         <nav className="flex flex-wrap justify-center gap-4 md:gap-8">
-          <a href="#features" className="text-sm text-white/80 transition hover:text-white md:text-base">
+          <a href="#features" className="text-sm text-white/80 hover:text-white md:text-base">
             Features
           </a>
-          <a href="#faq" className="text-sm text-white/80 transition hover:text-white md:text-base">
+          <a href="#faq" className="text-sm text-white/80 hover:text-white md:text-base">
             FAQ
           </a>
-          <a href="#how-it-works" className="text-sm text-white/80 transition hover:text-white md:text-base">
+          <a href="#how-it-works" className="text-sm text-white/80 hover:text-white md:text-base">
             How it works
           </a>
+
+          {/* SHOW ONLY WHEN LOGGED IN */}
+          {user && (
+            <>
+              <Link href="/#analyzer" className="text-sm text-white/80 hover:text-white md:text-base">
+                Analyze
+              </Link>
+              <a href="#history" className="text-sm text-white/80 hover:text-white md:text-base">
+                History
+              </a>
+            </>
+          )}
         </nav>
 
+        {/* RIGHT SIDE */}
         {user ? (
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center md:gap-5">
             <span className="max-w-[180px] truncate text-sm text-white md:max-w-[220px] md:text-base">
@@ -48,16 +62,16 @@ export default function Navbar() {
             </span>
             <button
               onClick={handleLogout}
-              className="rounded-xl bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--background)] transition hover:opacity-80 md:px-5 md:py-2.5 md:text-base"
+              className="rounded-xl bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--background)] hover:opacity-80 md:px-5 md:py-2.5 md:text-base"
             >
               Logout
             </button>
           </div>
         ) : (
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-3">
             <Link
               href="/login"
-              className="rounded-xl bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--background)] transition hover:opacity-80 md:px-5 md:py-2.5 md:text-base"
+              className="rounded-xl bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--background)] hover:opacity-80 md:px-5 md:py-2.5 md:text-base"
             >
               Sign In
             </Link>
