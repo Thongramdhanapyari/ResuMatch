@@ -21,7 +21,7 @@ export default function ResumeQualityForm({
           </h2>
 
           <p className="mt-3 text-xs text-[#64748B] md:mt-4 md:text-base">
-            Check ATS score, skills, spelling and formatting.
+            Check ATS score, skills, spelling, sections and formatting.
           </p>
         </div>
 

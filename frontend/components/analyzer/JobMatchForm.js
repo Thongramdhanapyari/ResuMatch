@@ -27,11 +27,8 @@ export default function JobMatchForm({
       </div>
 
       <div className="mt-8 flex flex-col items-center gap-8 sm:flex-row sm:justify-center sm:gap-12 md:mt-10 md:gap-16">
-        
-        {/* Resume Upload */}
         <div className="flex flex-col items-center">
           <label className="relative flex h-40 w-40 cursor-pointer flex-col items-center justify-center gap-3 rounded-[30px] border-2 border-dashed border-[#CBD5E1] bg-[#F8FAFC] text-center shadow-sm transition hover:border-[#94A3B8] hover:bg-white md:h-52 md:w-52 md:gap-4 md:rounded-[36px]">
-
             <input
               type="file"
               accept=".pdf,.docx"
@@ -61,10 +58,8 @@ export default function JobMatchForm({
           </label>
         </div>
 
-        {/* Job Description */}
         <div className="flex flex-col items-center">
           <div className="flex h-40 w-40 flex-col items-center justify-center gap-3 rounded-[30px] border-2 border-dashed border-[#CBD5E1] bg-[#F8FAFC] text-center shadow-sm transition hover:border-[#94A3B8] hover:bg-white md:h-52 md:w-52 md:gap-4 md:rounded-[36px]">
-
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E2E8F0] text-[#64748B] md:h-12 md:w-12">
               <FileText size={18} strokeWidth={1.5} />
             </div>
@@ -81,7 +76,6 @@ export default function JobMatchForm({
             </p>
           </div>
         </div>
-
       </div>
 
       <div className="mt-5 flex justify-center md:mt-8">

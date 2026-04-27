@@ -8,6 +8,20 @@ export default function ResultsPanel({ result }) {
 
   const mainTitle = isQuality ? "Resume Quality Score" : "Match Score";
 
+  const parsedSections = result.parsed_sections || {};
+  const sectionConfidence = result.section_confidence || {};
+
+  const atsChecklist = isQuality
+    ? {
+        email: result.email_present ?? null,
+        phone: result.phone_present ?? null,
+        skills: parsedSections.skills ? true : false,
+        education: parsedSections.education ? true : false,
+        projects: parsedSections.projects ? true : false,
+        experience: parsedSections.experience ? true : false,
+      }
+    : null;
+
   const scoreCards = isQuality
     ? [
         ["ATS Score", breakdown.ats_score ?? result.ats_score ?? 0],
@@ -40,12 +54,14 @@ export default function ResultsPanel({ result }) {
 
     y += 10;
     doc.text("Missing Skills / Sections:", 20, y);
+
     (result.missing_skills || []).slice(0, 10).forEach((s, i) => {
       doc.text(`- ${s}`, 25, y + 10 + i * 6);
     });
 
     y += 80;
     doc.text("Suggestions:", 20, y);
+
     (result.suggestions || []).slice(0, 10).forEach((s, i) => {
       doc.text(`- ${s}`, 25, y + 10 + i * 6);
     });
@@ -138,24 +154,44 @@ export default function ResultsPanel({ result }) {
         )}
 
         {isQuality && (
-          <div className="rounded-2xl bg-white p-5">
-            <h3 className="text-sm font-semibold text-[#1E293B]">
-              Resume Issues
-            </h3>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="rounded-2xl bg-white p-5">
+              <h3 className="text-sm font-semibold text-[#1E293B]">
+                ATS Checklist
+              </h3>
 
-            <div className="mt-4 flex flex-wrap gap-2">
-              {(result.missing_skills || []).length > 0 ? (
-                result.missing_skills.map((item, i) => (
-                  <span
-                    key={i}
-                    className="rounded-full bg-red-100 px-3 py-1 text-xs text-red-700"
-                  >
-                    {item}
-                  </span>
-                ))
-              ) : (
-                <p className="text-xs text-[#64748B]">No major missing sections</p>
-              )}
+              <div className="mt-4 space-y-2 text-sm">
+                {atsChecklist &&
+                  Object.entries(atsChecklist).map(([key, value], i) => (
+                    <div key={i} className="flex justify-between">
+                      <span className="text-[#475569] capitalize">{key}</span>
+                      <span className={value ? "text-green-600" : "text-red-500"}>
+                        {value ? "✔" : "✘"}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl bg-white p-5">
+              <h3 className="text-sm font-semibold text-[#1E293B]">
+                Section Confidence
+              </h3>
+
+              <div className="mt-4 space-y-2 text-sm">
+                {Object.keys(sectionConfidence).length > 0 ? (
+                  Object.entries(sectionConfidence).map(([sec, val], i) => (
+                    <div key={i} className="flex justify-between">
+                      <span className="text-[#475569] capitalize">{sec}</span>
+                      <span className="text-[#1E293B]">{val}%</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-xs text-[#64748B]">
+                    No section data available
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         )}

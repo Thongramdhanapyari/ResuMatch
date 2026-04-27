@@ -1,7 +1,12 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from app.services.analyzer import extract_text, clean_words, calculate_ats_score
+from app.services.analyzer import extract_text, calculate_ats_score
+from app.utils.skill_extractor import extract_skills
+from app.utils.section_parser import parse_sections
+from app.utils.ats_checker import run_ats_checks
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
 async def analyze_job_match(file, job_description: str):
@@ -49,21 +54,27 @@ async def analyze_job_match(file, job_description: str):
             "suggestions": ["Job description is empty."],
         }
 
-    texts = [resume_text, job_description]
-
     try:
-        vectorizer = TfidfVectorizer().fit_transform(texts)
-        vectors = vectorizer.toarray()
-        score = cosine_similarity([vectors[0]], [vectors[1]])[0][0]
+        resume_embedding = model.encode(resume_text)
+        jd_embedding = model.encode(job_description)
+
+        semantic_score = cosine_similarity(
+            [resume_embedding],
+            [jd_embedding]
+        )[0][0]
+
+        raw_match_score = round(float(semantic_score) * 100, 2)
+
     except Exception:
-        score = 0
+        raw_match_score = 0
 
     resume_lower = resume_text.lower()
-    resume_words = set(clean_words(resume_text))
-    jd_words = clean_words(job_description)
+    resume_skills = extract_skills(resume_text)
+    parsed = parse_sections(resume_text)
+    jd_skills = extract_skills(job_description)
 
-    matched = [w for w in jd_words if w in resume_words][:15]
-    missing = [w for w in jd_words if w not in resume_words][:15]
+    matched = list(resume_skills & jd_skills)
+    missing = list(jd_skills - resume_skills)
 
     suggestions = []
 
@@ -79,13 +90,14 @@ async def analyze_job_match(file, job_description: str):
     if len(resume_text.split()) < 150:
         suggestions.append("Your resume content looks short. Add more relevant details and impact.")
 
-    raw_match_score = round(score * 100, 2)
-
-    total_skills = len(matched) + len(missing)
-    skills_score = round((len(matched) / total_skills) * 100, 2) if total_skills > 0 else 0
-
+    if len(jd_skills) > 0:
+        skills_score = round((len(matched) / len(jd_skills)) * 100, 2)
+    else:
+        skills_score = 0
+        
     content_score = max(0, 100 - (len(suggestions) * 10))
-    ats_score = calculate_ats_score(resume_text)
+    ats_result = run_ats_checks(resume_text)
+    ats_score = ats_result["ats_score"]
 
     experience_keywords = [
         "experience", "internship", "intern", "worked",
@@ -106,7 +118,9 @@ async def analyze_job_match(file, job_description: str):
     )
 
     if experience_score < 40:
-        suggestions.append("Add more experience-focused points using action verbs like built, implemented, deployed, or optimized.")
+        suggestions.append(
+            "Add more experience-focused points using action verbs like built, implemented, deployed, or optimized."
+        )
 
     if match_score < 50:
         suggestions.append("Your resume is not well aligned with this role.")
@@ -130,4 +144,6 @@ async def analyze_job_match(file, job_description: str):
         "matched_skills": matched,
         "missing_skills": missing,
         "suggestions": suggestions,
+        "parsed_sections": parsed.get("sections", {}),
+        "section_confidence": parsed.get("confidence", {}),
     }

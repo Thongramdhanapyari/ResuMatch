@@ -1,33 +1,63 @@
 # AI Resume Analyzer
 
-An AI-powered web application that analyzes resumes against job descriptions and provides a match score, missing skills, and improvement suggestions.
+An AI-powered web application that analyzes resumes using semantic NLP, rule-based ATS evaluation, and structured document understanding to provide job match scores, resume quality scores, skill gaps, and improvement suggestions.
 
 ---
 
 ## 🚀 Features
+
+### 📄 Resume Analysis
 - Upload PDF/DOCX resumes
-- Compare with job description
-- Match score calculation
-- Missing & matched skills detection
-- Smart suggestions for improvement
-- Authentication (Signup/Login with JWT)
+- Resume quality scoring (ATS + structure + semantic + spelling)
+- Section detection (skills, projects, experience, education, summary)
+- Action verb & formatting evaluation
+- Spelling and content quality checks
+
+### 🎯 Job Matching (AI-Powered)
+- Semantic resume vs job description matching (Sentence Transformers)
+- Skill extraction with normalization (aliases like js → javascript)
+- Matched & missing skills detection
+- Experience relevance scoring
+- ATS compatibility score
+
+### 🧠 AI Intelligence Layer
+- Sentence-BERT embeddings for semantic similarity
+- Hybrid scoring system (rules + ML + NLP)
+- Structured score breakdown:
+  - Semantic match
+  - Skill match
+  - ATS score
+  - Experience relevance
+  - Content quality
+
+### 🔐 Authentication
+- JWT-based login/signup system
+- Protected analysis routes
 
 ---
 
 ## 🛠️ Tech Stack
-**Frontend**
-- Next.js
-- Tailwind CSS
 
-**Backend**
+### Frontend
+- Next.js (App Router)
+- Tailwind CSS
+- jsPDF (report export)
+
+### Backend
 - FastAPI
-- SQLModel (SQLite)
+- SQLModel (PostgreSQL ready, SQLite for dev)
 - JWT Authentication
 
-**AI / Processing**
+### AI / NLP Engine
+- sentence-transformers (all-MiniLM-L6-v2)
 - scikit-learn (cosine similarity)
 - PyMuPDF (PDF parsing)
 - python-docx (DOCX parsing)
+
+### AI Modules
+- Skill extraction engine (normalized skill catalog)
+- Section parser (regex + heading detection)
+- ATS rule-based evaluator
 
 ---
 
@@ -66,6 +96,10 @@ Backend (Render)
 Build: pip install -r requirements.txt
 Start: uvicorn main:app --host 0.0.0.0 --port $PORT
 Frontend (Vercel)
+
+Switch to PostgreSQL in production:
+
+DATABASE_URL=postgresql://user:password@host/db
 
 Add env:
 NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
