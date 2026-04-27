@@ -6,7 +6,15 @@ from app.utils.skill_extractor import extract_skills
 from app.utils.section_parser import parse_sections
 from app.utils.ats_checker import run_ats_checks
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+from sentence_transformers import SentenceTransformer
+
+model = None
+
+def get_model():
+    global model
+    if model is None:
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+    return model
 
 
 async def analyze_job_match(file, job_description: str):
@@ -55,8 +63,8 @@ async def analyze_job_match(file, job_description: str):
         }
 
     try:
-        resume_embedding = model.encode(resume_text)
-        jd_embedding = model.encode(job_description)
+        resume_embedding = get_model().encode(resume_text)
+        jd_embedding = get_model().encode(job_description)
 
         semantic_score = cosine_similarity(
             [resume_embedding],
@@ -133,6 +141,7 @@ async def analyze_job_match(file, job_description: str):
         "skills_score": skills_score,
         "content_score": content_score,
         "ats_score": ats_score,
+        "ats_details": ats_result["details"],
         "experience_score": experience_score,
         "score_breakdown": {
             "semantic_match": raw_match_score,
