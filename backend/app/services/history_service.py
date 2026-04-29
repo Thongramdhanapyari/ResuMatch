@@ -15,8 +15,8 @@ def save_analysis_history(
         job_title=job_title,
         resume_filename=resume_filename,
 
-        analysis_type=result.get("analysis_type", "job_match"),   # NEW
-        experience_score=float(result.get("experience_score", 0)),# NEW
+        analysis_type=result.get("analysis_type", "job_match"),
+        experience_score=float(result.get("experience_score", 0)),
 
         match_score=float(result.get("match_score", 0)),
         skills_score=float(result.get("skills_score", 0)),
@@ -24,7 +24,14 @@ def save_analysis_history(
         ats_score=float(result.get("ats_score", 0)),
 
         matched_skills=json.dumps(result.get("matched_skills", [])),
-        missing_skills=json.dumps(result.get("missing_skills", [])),
+
+        # only store missing skills for job match
+        missing_skills=json.dumps(
+            result.get("missing_skills", [])
+            if result.get("analysis_type") == "job_match"
+            else []
+        ),
+
         suggestions=json.dumps(result.get("suggestions", [])),
     )
 

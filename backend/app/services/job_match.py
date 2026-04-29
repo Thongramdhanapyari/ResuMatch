@@ -1,20 +1,10 @@
-from sentence_transformers import SentenceTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from app.services.analyzer import extract_text, calculate_ats_score
 from app.utils.skill_extractor import extract_skills
 from app.utils.section_parser import parse_sections
 from app.utils.ats_checker import run_ats_checks
-
-from sentence_transformers import SentenceTransformer
-
-model = None
-
-def get_model():
-    global model
-    if model is None:
-        model = SentenceTransformer("all-MiniLM-L6-v2")
-    return model
 
 
 async def analyze_job_match(file, job_description: str):
@@ -63,12 +53,12 @@ async def analyze_job_match(file, job_description: str):
         }
 
     try:
-        resume_embedding = get_model().encode(resume_text)
-        jd_embedding = get_model().encode(job_description)
+        vectorizer = TfidfVectorizer(stop_words="english")
+        vectors = vectorizer.fit_transform([resume_text, job_description])
 
         semantic_score = cosine_similarity(
-            [resume_embedding],
-            [jd_embedding]
+            vectors[0:1],
+            vectors[1:2]
         )[0][0]
 
         raw_match_score = round(float(semantic_score) * 100, 2)
@@ -102,7 +92,7 @@ async def analyze_job_match(file, job_description: str):
         skills_score = round((len(matched) / len(jd_skills)) * 100, 2)
     else:
         skills_score = 0
-        
+
     content_score = max(0, 100 - (len(suggestions) * 10))
     ats_result = run_ats_checks(resume_text)
     ats_score = ats_result["ats_score"]
@@ -154,5 +144,8 @@ async def analyze_job_match(file, job_description: str):
         "missing_skills": missing,
         "suggestions": suggestions,
         "parsed_sections": parsed.get("sections", {}),
-        "section_confidence": parsed.get("confidence", {}),
+        "section_confidence": {
+            k: round(v * 100, 2)
+            for k, v in parsed.get("confidence", {}).items()
+        },
     }

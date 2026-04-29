@@ -34,7 +34,6 @@ async def analyze_resume_quality(file):
             "semantic_score": 0,
             "spelling_score": 0,
             "matched_skills": [],
-            "missing_skills": [],
             "suggestions": ["Could not extract text from resume."],
             "parsed_sections": {},
             "section_confidence": {},
@@ -42,8 +41,7 @@ async def analyze_resume_quality(file):
         }
 
     resume_lower = resume_text.lower()
-    words = resume_text.split()
-    word_count = len(words)
+    word_count = len(resume_text.split())
 
     parsed = parse_sections(resume_text)
     ats_result = run_ats_checks(resume_text)
@@ -75,30 +73,32 @@ async def analyze_resume_quality(file):
     if weak_found:
         suggestions.append("Avoid weak/generic words: " + ", ".join(weak_found))
 
-    spelling_issues = []
-
-    for word in words:
-        clean = word.strip(".,()[]{}:-").lower()
-        if len(clean) > 12 and clean.isalpha():
-            spelling_issues.append(clean)
-
-    spelling_issues = list(set(spelling_issues))[:10]
-    spelling_score = max(0, 100 - len(spelling_issues) * 5)
+    spelling_score = 100
 
     semantic_score = 100
 
     if not any(word in resume_lower for word in ACTION_WORDS):
-        semantic_score -= 25
+        semantic_score -= 20
 
-    if "project" not in resume_lower and "experience" not in resume_lower:
-        semantic_score -= 25
+    if "project" not in resume_lower:
+        semantic_score -= 15
+
+    if "experience" not in resume_lower:
+        semantic_score -= 15
 
     if not any(char.isdigit() for char in resume_text):
         semantic_score -= 20
-        suggestions.append("Add numbers/metrics like improved speed by 30%, handled 100+ users, or reduced time by 40%.")
+        suggestions.append(
+            "Add numbers/metrics like improved speed by 30%, handled 100+ users, or reduced time by 40%."
+        )
+
+    semantic_score = max(0, semantic_score)
 
     resume_skills = extract_skills(resume_text)
-    skills_score = 0
+    skills_score = min(100, len(resume_skills) * 5)
+
+    if skills_score < 40:
+        suggestions.append("Add more relevant technical skills to improve your profile.")
 
     content_score = max(0, 100 - len(suggestions) * 8)
 
@@ -127,10 +127,13 @@ async def analyze_resume_quality(file):
             "content_quality": content_score,
         },
         "matched_skills": list(resume_skills),
-        "missing_skills": missing_sections,
-        "spelling_issues": spelling_issues,
-        "suggestions": suggestions or ["Resume quality looks good. Improve further with stronger metrics and impact."],
-        "parsed_sections": parsed["sections"],
-        "section_confidence": parsed["confidence"],
+        "suggestions": suggestions or [
+            "Resume quality looks good. Improve further with stronger metrics and impact."
+        ],
+        "parsed_sections": parsed.get("sections", {}),
+        "section_confidence": {
+            k: round(v * 100, 2)
+            for k, v in parsed.get("confidence", {}).items()
+        },
         "ats_details": ats_result["details"],
     }
