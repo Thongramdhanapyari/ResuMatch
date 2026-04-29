@@ -14,15 +14,15 @@ An AI-powered web application that analyzes resumes using semantic NLP, rule-bas
 - Spelling and content quality checks
 
 ### 🎯 Job Matching (AI-Powered)
-- Semantic resume vs job description matching (Sentence Transformers)
+- Resume vs Job Description similarity using TF-IDF + cosine similarity
 - Skill extraction with normalization (aliases like js → javascript)
 - Matched & missing skills detection
 - Experience relevance scoring
 - ATS compatibility score
 
 ### 🧠 AI Intelligence Layer
-- Sentence-BERT embeddings for semantic similarity
-- Hybrid scoring system (rules + ML + NLP)
+- Lightweight NLP pipeline using TF-IDF (optimized for low-memory environments)
+- Hybrid scoring system (rules + statistical NLP)
 - Structured score breakdown:
   - Semantic match
   - Skill match
@@ -48,16 +48,16 @@ An AI-powered web application that analyzes resumes using semantic NLP, rule-bas
 - SQLModel (PostgreSQL ready, SQLite for dev)
 - JWT Authentication
 
-### AI / NLP Engine
-- sentence-transformers (all-MiniLM-L6-v2)
-- scikit-learn (cosine similarity)
+### NLP Engine
+- scikit-learn (TF-IDF + cosine similarity)
 - PyMuPDF (PDF parsing)
 - python-docx (DOCX parsing)
 
-### AI Modules
+### Core Modules
 - Skill extraction engine (normalized skill catalog)
 - Section parser (regex + heading detection)
 - ATS rule-based evaluator
+- Resume–JD similarity using TF-IDF
 
 ---
 
@@ -121,7 +121,7 @@ NEXT_PUBLIC_API_URL
 ```bash
 Do not commit .env or .env.local
 temp/ folder is auto-generated
-SQLite is used for simplicity (can switch to PostgreSQL later)
+SQLite is used for development; PostgreSQL recommended for production
 ```
 ### 👨‍💻 Author
 
