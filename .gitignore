@@ -4,6 +4,7 @@ backend/__pycache__/
 backend/.env
 backend/database.db
 backend/temp/
+backend/venv-v2/
 
 # Frontend
 frontend/node_modules/

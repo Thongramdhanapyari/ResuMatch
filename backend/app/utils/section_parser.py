@@ -10,33 +10,30 @@ SECTION_PATTERNS = {
 
 
 def parse_sections(text: str):
+    if not text:
+        return {"sections": {}, "confidence": {}}
+
     text_lower = text.lower()
 
-    sections = {}
-    confidence = {}
+    matches = []
 
     for section, pattern in SECTION_PATTERNS.items():
-        matches = list(re.finditer(pattern, text_lower))
+        for match in re.finditer(pattern, text_lower):
+            matches.append((match.start(), match.end(), section))
 
-        if matches:
-            # Take first match as anchor point
-            start = matches[0].end()
+    matches.sort(key=lambda x: x[0])
 
-            # Find next section or end of text
-            next_positions = [
-                m.start() for m in re.finditer(r"\n[a-z ]{3,30}\n", text_lower[start:])
-            ]
+    sections = {key: "" for key in SECTION_PATTERNS}
+    confidence = {key: 0.0 for key in SECTION_PATTERNS}
 
-            end = start + next_positions[0] if next_positions else len(text_lower)
+    for i, (start, end, section) in enumerate(matches):
+        next_start = matches[i + 1][0] if i + 1 < len(matches) else len(text)
 
-            section_text = text[start:end].strip()
+        content = text[end:next_start].strip()
 
-            sections[section] = section_text
-            confidence[section] = min(1.0, len(section_text.split()) / 100)
-
-        else:
-            sections[section] = ""
-            confidence[section] = 0.0
+        if content:
+            sections[section] = content
+            confidence[section] = min(1.0, len(content.split()) / 120)
 
     return {
         "sections": sections,

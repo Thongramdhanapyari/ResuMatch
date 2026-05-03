@@ -6,6 +6,7 @@ ACTION_VERBS = {
     "integrated", "automated", "engineered", "architected"
 }
 
+
 def check_email(text: str) -> bool:
     return bool(re.search(r"[\w\.-]+@[\w\.-]+\.\w+", text))
 
@@ -15,38 +16,46 @@ def check_phone(text: str) -> bool:
 
 
 def check_links(text: str) -> dict:
+    text_lower = text.lower()
     return {
-        "github": "github.com" in text.lower(),
-        "linkedin": "linkedin.com" in text.lower()
+        "github": "github.com" in text_lower,
+        "linkedin": "linkedin.com" in text_lower
     }
 
 
 def check_sections(text: str) -> dict:
     text_lower = text.lower()
-
     return {
         "skills": "skills" in text_lower,
         "education": "education" in text_lower,
-        "projects": "project" in text_lower or "projects" in text_lower,
+        "projects": "project" in text_lower,
         "experience": "experience" in text_lower
     }
 
 
 def check_bullet_quality(text: str) -> float:
-    bullets = text.count("•") + text.count("-")
-    total_lines = len(text.split("\n"))
+    lines = [line.strip() for line in text.split("\n") if line.strip()]
 
-    if total_lines == 0:
+    if not lines:
         return 0
 
-    return min(100, (bullets / total_lines) * 100)
+    bullet_lines = sum(
+        1 for line in lines
+        if line.startswith(("•", "-", "*"))
+    )
+
+    return min(100, (bullet_lines / len(lines)) * 100)
 
 
 def check_action_verbs(text: str) -> float:
     text_lower = text.lower()
-    count = sum(1 for verb in ACTION_VERBS if verb in text_lower)
 
-    return min(100, count * 12)
+    count = sum(
+        text_lower.count(verb)
+        for verb in ACTION_VERBS
+    )
+
+    return min(100, count * 8)
 
 
 def check_length(text: str) -> float:
@@ -54,12 +63,18 @@ def check_length(text: str) -> float:
 
     if words < 120:
         return 40
-    elif words > 900:
+    if words > 900:
         return 60
     return 100
 
 
 def run_ats_checks(text: str):
+    if not text:
+        return {
+            "ats_score": 0,
+            "details": {}
+        }
+
     email = check_email(text)
     phone = check_phone(text)
     links = check_links(text)
@@ -71,21 +86,17 @@ def run_ats_checks(text: str):
 
     score = 0
 
-    # Core requirements (very important)
     score += 15 if email else 0
     score += 15 if phone else 0
 
-    # Sections
     score += 10 if sections["skills"] else 0
     score += 10 if sections["education"] else 0
     score += 10 if sections["projects"] else 0
     score += 10 if sections["experience"] else 0
 
-    # Optional links
     score += 5 if links["github"] else 0
     score += 5 if links["linkedin"] else 0
 
-    # Quality signals
     score += bullet_score * 0.1
     score += verb_score * 0.15
     score += length_score * 0.1
@@ -97,8 +108,8 @@ def run_ats_checks(text: str):
             "phone_present": phone,
             "links": links,
             "sections": sections,
-            "bullet_score": bullet_score,
-            "action_verb_score": verb_score,
+            "bullet_score": round(bullet_score, 2),
+            "action_verb_score": round(verb_score, 2),
             "length_score": length_score,
         }
     }

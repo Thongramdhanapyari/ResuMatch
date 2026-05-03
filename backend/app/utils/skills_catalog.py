@@ -20,7 +20,14 @@ SKILL_CATALOG = {
     ],
 
     "concepts": [
-        "rest api", "system design", "oop", "dbms", "operating systems",
-        "machine learning", "nlp", "data structures", "algorithms"
+        "rest api", "apis",
+        "system design",
+        "oop", "object oriented programming",
+        "dbms", "database management systems",
+        "operating systems", "os",
+        "machine learning",
+        "nlp", "natural language processing",
+        "data structures",
+        "algorithms"
     ]
 }

@@ -1,5 +1,3 @@
-from app.utils.parser import extract_text
-
 STOPWORDS = {
     "the", "and", "with", "for", "you", "are", "this", "that",
     "from", "have", "has", "had", "was", "were", "will", "your",
@@ -11,6 +9,9 @@ STOPWORDS = {
 
 
 def clean_words(text: str) -> list[str]:
+    if not text:
+        return []
+
     words = text.lower().split()
     cleaned = []
     seen = set()
@@ -25,22 +26,27 @@ def clean_words(text: str) -> list[str]:
 
 
 def calculate_ats_score(resume_text: str) -> int:
-    ats_score = 100
-    resume_lower = resume_text.lower()
+    if not resume_text:
+        return 0
 
-    if "skills" not in resume_lower:
-        ats_score -= 20
-    if "education" not in resume_lower:
-        ats_score -= 20
-    if (
-        "project" not in resume_lower
-        and "projects" not in resume_lower
-        and "experience" not in resume_lower
-    ):
-        ats_score -= 20
-    if len(resume_text.split()) < 150:
-        ats_score -= 20
+    text = resume_text.lower()
+    word_count = len(resume_text.split())
+
+    penalties = 0
+
+    if "skills" not in text:
+        penalties += 20
+
+    if "education" not in text:
+        penalties += 20
+
+    if not any(k in text for k in ("project", "projects", "experience")):
+        penalties += 20
+
+    if word_count < 150:
+        penalties += 20
+
     if "@" not in resume_text:
-        ats_score -= 10
+        penalties += 10
 
-    return max(0, ats_score)
+    return max(0, 100 - penalties)

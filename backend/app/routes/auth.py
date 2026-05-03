@@ -9,19 +9,38 @@ from app.core.security import hash_password, verify_password, create_access_toke
 router = APIRouter()
 
 
+def get_user_by_email(session: Session, email: str):
+    return session.exec(
+        select(User).where(User.email == email)
+    ).first()
+
+
+def generate_user_response(user: User):
+    token = create_access_token(
+        {"sub": user.email, "id": user.id}
+    )
+
+    return {
+        "message": "Success",
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+        },
+    }
+
+
 @router.post("/signup")
 def signup(data: UserCreate, session: Session = Depends(get_session)):
     email = data.email.lower().strip()
 
-    existing_user = session.exec(
-        select(User).where(User.email == email)
-    ).first()
-
-    if existing_user:
+    if get_user_by_email(session, email):
         raise HTTPException(status_code=400, detail="Email already exists")
 
     if len(data.password) < 6:
-        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+        raise HTTPException(status_code=400, detail="Password too short")
 
     user = User(
         name=data.name.strip(),
@@ -37,47 +56,16 @@ def signup(data: UserCreate, session: Session = Depends(get_session)):
         session.rollback()
         raise HTTPException(status_code=500, detail="Signup failed")
 
-    token = create_access_token(
-        {"sub": user.email, "id": user.id}
-    )
-
-    return {
-        "message": "Signup successful",
-        "access_token": token,
-        "token_type": "bearer",
-        "user": {
-            "id": user.id,
-            "name": user.name,
-            "email": user.email,
-        },
-    }
+    return generate_user_response(user)
 
 
 @router.post("/login")
 def login(data: UserLogin, session: Session = Depends(get_session)):
     email = data.email.lower().strip()
 
-    user = session.exec(
-        select(User).where(User.email == email)
-    ).first()
+    user = get_user_by_email(session, email)
 
-    if not user:
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+    if not user or not verify_password(data.password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    if not verify_password(data.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
-
-    token = create_access_token(
-        {"sub": user.email, "id": user.id}
-    )
-
-    return {
-        "message": "Login successful",
-        "access_token": token,
-        "token_type": "bearer",
-        "user": {
-            "id": user.id,
-            "name": user.name,
-            "email": user.email,
-        },
-    }
+    return generate_user_response(user)

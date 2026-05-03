@@ -15,18 +15,24 @@ security = HTTPBearer()
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ):
-    token = credentials.credentials
-    payload = verify_token(token)
+    payload = verify_token(credentials.credentials)
 
-    if not payload:
+    if not payload or not payload.get("id"):
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     return payload
 
 
 def validate_pdf(resume: UploadFile):
-    if resume.content_type != "application/pdf":
+    if not resume.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+
+
+def get_user_id(current_user: dict) -> int:
+    user_id = current_user.get("id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="User id not found in token")
+    return user_id
 
 
 @router.post("/analyze/job-match")
@@ -39,15 +45,15 @@ async def job_match(
     validate_pdf(resume)
 
     try:
-        result = await analyze_job_match(resume, job_description)
-
-        user_id = current_user.get("id")
-        if not user_id:
-            raise HTTPException(status_code=401, detail="User id not found in token")
-
+        result = await analyze_job_match(
+            resume,
+            job_description,
+            session,
+            get_user_id(current_user)
+        )
         save_analysis_history(
             session=session,
-            user_id=user_id,
+            user_id=get_user_id(current_user),
             job_title=job_description[:80].strip() or "Untitled Role",
             resume_filename=resume.filename,
             result=result,
@@ -58,8 +64,8 @@ async def job_match(
     except HTTPException:
         raise
     except Exception as e:
-        print("JOB MATCH ERROR:", repr(e))
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"[JOB MATCH ERROR] {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 @router.post("/analyze/resume-quality")
@@ -73,13 +79,9 @@ async def resume_quality(
     try:
         result = await analyze_resume_quality(resume)
 
-        user_id = current_user.get("id")
-        if not user_id:
-            raise HTTPException(status_code=401, detail="User id not found in token")
-
         save_analysis_history(
             session=session,
-            user_id=user_id,
+            user_id=get_user_id(current_user),
             job_title="Resume Quality Analysis",
             resume_filename=resume.filename,
             result=result,
@@ -90,5 +92,5 @@ async def resume_quality(
     except HTTPException:
         raise
     except Exception as e:
-        print("RESUME QUALITY ERROR:", repr(e))
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"[RESUME QUALITY ERROR] {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
